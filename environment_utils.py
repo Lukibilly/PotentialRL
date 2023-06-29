@@ -2,19 +2,16 @@ import gym
 import numpy as np
 import torch as tr
 
-def force(x,y,U0,type='toy'):
+def force(x,y,U0,type='mexican'):
     if type == 'mexican':
-        r = tr.sqrt(x**2+y**2)
+        r = np.sqrt(x**2+y**2)
         bool = r>0.5
         fr = -64*U0*(r**2-0.25)
         fr[bool] = 0
         F_x = fr*x
         F_y = fr*y
         return F_x,F_y
-    if type == 'toy':
-        F_x = np.zeros(x.shape) #0.1*tr.sin(2*np.pi*x)
-        F_y = 0.1*np.sin(x)
-        return F_x,F_y
+
     
 class Box():
     def __init__(self, width, height, center=None):

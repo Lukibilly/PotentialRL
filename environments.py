@@ -8,9 +8,9 @@ class BoxEnvironment1(gym.Env):
         self.space = space
         self.goal = goal
     
-    def init_state(self, batch_size):
-        self.state = np.zeros((batch_size,5))
-        self.state[:,0] = -0.5*np.ones(batch_size)
+    def init_state(self, agent_batch_size):
+        self.state = np.zeros((agent_batch_size,5))
+        self.state[:,0] = -0.5*np.ones(agent_batch_size)
 
     def step(self, action, U0, dt):
         x, y = self.state[:,0], self.state[:,1]
@@ -33,9 +33,12 @@ class BoxEnvironment1(gym.Env):
         self.state[:,3] = F_y
         self.state[:,4] = theta
 
-    def reward(self):
+    def reward(self, dt):
         # Compute reward
-        return 1
+        reward = -dt*np.ones(self.state.shape[0])/100
+        wincondition = int(self.goal_check())
+        reward += wincondition*100
+        return reward
     
     def goal_check(self):
         position = self.state[:, 0:2]

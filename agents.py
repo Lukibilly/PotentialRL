@@ -43,7 +43,9 @@ class SquashedGaussianActor(nn.Module):
             pi_action = (pi_action + 1) / 2
 
         pi_action = self.act_scaling * pi_action
-
+        
+        if tr.isnan(pi_action).any():
+            print('piaction is nana')
         return pi_action, logp_pi
     
 class QCritic(nn.Module):
@@ -53,6 +55,8 @@ class QCritic(nn.Module):
     
     def forward(self, state, action):
         q = self.net(tr.cat([state, action], dim=-1))
+        if tr.isnan(q).any():
+            print('q is nana')
         return tr.squeeze(q, -1)
 
 class SACAgent(nn.Module):
