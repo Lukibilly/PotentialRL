@@ -1,5 +1,50 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import shutil
+
+class RLPlotter():
+    def __init__(self, logger):
+        self.logger = logger
+        self.plot_episode_actions()
+        self.plot_episode_losses()
+        self.plot_episode_steps()
+
+    def plot_episode_losses(self):
+        folder = os.path.join('logs', 'episode_losses')
+        shutil.rmtree(folder, ignore_errors=True)
+        os.makedirs(folder, exist_ok=True)
+        for i in range(len(self.logger.episode_losses)):
+            x = np.arange(len(self.logger.episode_losses[i]))
+            plt.plot(x, self.logger.episode_losses[i])
+            plt.xlabel('step')
+            plt.ylabel('loss')
+            plt.savefig(os.path.join(folder, f'episode{i}_losses.png'))
+            plt.clf()
+
+    def plot_episode_steps(self):
+        folder = os.path.join('logs', 'episode_steps')
+        shutil.rmtree(folder, ignore_errors=True)
+        os.makedirs(folder, exist_ok=True)
+        x = np.arange(len(self.logger.episode_steps))
+        plt.plot(x, self.logger.episode_steps)
+        plt.xlabel('episode')
+        plt.ylabel('steps')
+        plt.savefig(os.path.join(folder, 'episode_steps.png'))
+        plt.clf()
+
+    def plot_episode_actions(self):
+        folder = os.path.join('logs', 'episode_actions')
+        shutil.rmtree(folder, ignore_errors=True)
+        os.makedirs(folder, exist_ok=True)
+        for i in range(len(self.logger.episode_actions)):
+            x = np.arange(len(self.logger.episode_actions[i]))
+            plt.plot(x, self.logger.episode_actions[i])
+            plt.xlabel('step')
+            plt.ylabel('action')
+            plt.savefig(os.path.join(folder, f'episode{i}_actions.png'))
+            plt.clf()
+
 
 def plot_normalized_mexican_hat_potential():
     x,y = np.meshgrid(np.linspace(-1,1,100),np.linspace(-1,1,100))
