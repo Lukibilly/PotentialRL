@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 
 class RLLogger():
     def __init__(self):
@@ -12,7 +13,7 @@ class RLLogger():
         self.episode_steps = []
 
     def save_state(self, state):
-        self.states.append(state)
+        self.states.append(copy.deepcopy(state))
 
     def save_episode(self, steps):
         self.episode_states.append(self.states[-steps:])
@@ -24,7 +25,7 @@ class RLLogger():
         self.losses.append(loss)
     
     def save_action(self, action):
-        self.actions.append(action)
+        self.actions.append(action[0])
 
     
 
