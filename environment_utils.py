@@ -18,9 +18,11 @@ class Box():
         self.width = width
         self.height = height
         if center is None:
+            self.center = tr.zeros(2)
             self.centerX = 0
             self.centerY = 0
-        else:      
+        else:
+            self.center = center
             self.centerX = center[:,0]
             self.centerY = center[:,1]
     
