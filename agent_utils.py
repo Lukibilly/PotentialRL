@@ -23,16 +23,16 @@ class ReplayBuffer:
         self.state2_buf = np.zeros((size, agent_batch_size, state_dim), dtype=np.float32)
         self.action_buf = np.zeros((size, agent_batch_size, act_dim), dtype=np.float32)
         self.reward_buf = np.zeros((size, agent_batch_size), dtype=np.float32)
-        self.loss_buf = np.zeros((size, agent_batch_size), dtype=np.float32)
+        self.probabilities_buff = np.zeros((size, agent_batch_size), dtype=np.float32)
         self.done_buf   = np.zeros((size, agent_batch_size), dtype=np.float32)
         self.pointer, self.size, self.max_size = 0, 0, size
 
-    def store(self, state_now, action, reward, state_next, loss, done):
+    def store(self, state_now, action, reward, state_next, probabilities, done):
         self.state_buf[self.pointer] = state_now
         self.state2_buf[self.pointer] = state_next
         self.action_buf[self.pointer] = action.detach().cpu().numpy()
         self.reward_buf[self.pointer] = reward
-        self.loss_buf[self.pointer] = loss
+        self.probabilities_buff[self.pointer] = probabilities
         self.done_buf[self.pointer] = done
         self.pointer = (self.pointer+1) % self.max_size
         self.size = min(self.size+1, self.max_size)
@@ -45,3 +45,4 @@ class ReplayBuffer:
                      reward = self.reward_buf[idxs],
                      done = self.done_buf[idxs])
         return {k: tr.as_tensor(v, dtype=tr.float32, device=device) for k,v in batch.items()}
+    

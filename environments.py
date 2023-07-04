@@ -39,16 +39,17 @@ class BoxEnvironment1(gym.Env):
         # self.state[:,4] = theta
 
         # Compute reward
-        reward = self.reward(dt, np.invert(inside_space).astype(int))
+        reward = self.reward(dt, np.array(inside_space).astype(int))
 
         return reward
     
-    def reward(self, dt, not_inside_space):
+    def reward(self, dt, inside_space):
         # Compute reward
+        not_inside_space = np.logical_not(inside_space)
         reward = -dt*np.ones(self.state.shape[0])
         wincondition = np.array(self.goal_check()).astype(int)
-        reward += wincondition*100
-        reward -= not_inside_space*10
+        reward += wincondition*1
+        reward -= not_inside_space*0.2
 
         return reward
     

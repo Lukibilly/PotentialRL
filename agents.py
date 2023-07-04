@@ -51,16 +51,14 @@ class SquashedGaussianActor(nn.Module):
 class QCritic(nn.Module):
     def __init__(self, state_dim, act_dim, hidden_dims, activation):
         super().__init__()
-        self.net = NNSequential([state_dim+act_dim] + list(hidden_dims) + [1], activation)
+        self.net = NNSequential([state_dim+act_dim] + list(hidden_dims) + [1], activation, output_activation=nn.LeakyReLU)
     
     def forward(self, state, action):
         q = self.net(tr.cat([state, action], dim=-1))
-        if tr.isnan(q).any():
-            print('q is nana')
         return tr.squeeze(q, -1)
 
 class SACAgent(nn.Module):
-    def __init__(self, state_dim, act_dim, hidden_dims=(64,64), act_scaling=1, act_positive=False, activation=nn.ReLU):
+    def __init__(self, state_dim, act_dim, hidden_dims=(64,64), act_scaling=1, act_positive=False, activation=nn.LeakyReLU):
         super().__init__()
         self.actor = SquashedGaussianActor(state_dim, act_dim, hidden_dims, activation, act_scaling, act_positive)
         self.critic1 = QCritic(state_dim, act_dim, hidden_dims, activation)
