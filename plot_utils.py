@@ -9,43 +9,70 @@ class RLPlotter():
         self.goal_area = goal_area
 
     def clear_plots(self):
-        clear_folder('episode_losses')
+        clear_folder('episode_losses_critic')
+        clear_folder('episode_losses_actor')
         clear_folder('episode_actions')
         clear_folder('episode_paths')
-        clear_folder('run_losses')
+        clear_folder('run_losses_critic')
+        clear_folder('run_losses_actor')
         clear_folder('episode_steps')
         clear_folder('episode_actions_polar')
 
     def plot_last_episode(self):
-        self.plot_last_episode_losses()
+        self.plot_last_episode_losses_critic()
+        self.plot_last_episode_losses_actor()
         self.plot_last_episode_actions()
         self.plot_last_episode_paths()
-        self.plot_last_losses()
+        self.plot_last_losses_critic()
+        self.plot_last_losses_actor()
         self.plot_last_episode_steps()
         self.plot_last_episdode_actions_polar()
 
-    def plot_last_episode_losses(self):        
-        folder = os.path.join('logs', 'episode_losses')
-        i = len(self.logger.episode_losses)-1
-        x = np.arange(len(self.logger.episode_losses[i]))
-        plt.plot(x, self.logger.episode_losses[i])
+    def plot_last_episode_losses_critic(self):        
+        folder = os.path.join('logs', 'episode_losses_critic')
+        i = len(self.logger.episode_losses_critic)-1
+        x = np.arange(len(self.logger.episode_losses_critic[i]))
+        plt.plot(x, self.logger.episode_losses_critic[i])
         plt.xlabel('Step')
-        plt.ylabel('Loss')
+        plt.ylabel('Loss Critic')
         plt.title(f'Episode {i} MSE')
-        plt.savefig(os.path.join(folder, f'episode{i}_losses.png'))
-        plt.clf()
+        plt.savefig(os.path.join(folder, f'episode{i}_losses_critic.png'))
+        plt.close()
+    
+    def plot_last_episode_losses_actor(self):
+        folder = os.path.join('logs', 'episode_losses_actor')
+        i = len(self.logger.episode_losses_actor)-1
+        x = np.arange(len(self.logger.episode_losses_actor[i]))
+        plt.plot(x, self.logger.episode_losses_actor[i])
+        plt.xlabel('Step')
+        plt.ylabel('Loss Actor')
+        plt.title(f'Episode {i} MSE')
+        plt.savefig(os.path.join(folder, f'episode{i}_losses_actor.png'))
+        plt.close()
 
-    def plot_last_losses(self):
-        folder = os.path.join('logs', 'run_losses')
+    def plot_last_losses_critic(self):
+        folder = os.path.join('logs', 'run_losses_critic')
         shutil.rmtree(folder, ignore_errors=True)
         os.makedirs(folder, exist_ok=True)
-        x = np.arange(len(self.logger.losses))
-        plt.plot(x, self.logger.losses)
+        x = np.arange(len(self.logger.losses_critic))
+        plt.plot(x, self.logger.losses_critic)
         plt.xlabel('Step')
-        plt.ylabel('Loss')
+        plt.ylabel('Loss Critic')
         plt.title('Run MSE')
-        plt.savefig(os.path.join(folder, 'run_losses.png'))
-        plt.clf()
+        plt.savefig(os.path.join(folder, 'run_losses_critic.png'))
+        plt.close()
+    
+    def plot_last_losses_actor(self):
+        folder = os.path.join('logs', 'run_losses_actor')
+        shutil.rmtree(folder, ignore_errors=True)
+        os.makedirs(folder, exist_ok=True)
+        x = np.arange(len(self.logger.losses_actor))
+        plt.plot(x, self.logger.losses_actor)
+        plt.xlabel('Step')
+        plt.ylabel('Loss Actor')
+        plt.title('Run MSE')
+        plt.savefig(os.path.join(folder, 'run_losses_actor.png'))
+        plt.close()
 
     def plot_last_episode_steps(self):
         folder = os.path.join('logs', 'episode_steps')
@@ -56,7 +83,7 @@ class RLPlotter():
         plt.xlabel('Episode')
         plt.ylabel('Steps')
         plt.savefig(os.path.join(folder, 'episode_steps.png'))
-        plt.clf()
+        plt.close()
     
     def plot_last_episode_actions(self):
         folder = os.path.join('logs', 'episode_actions')
@@ -67,7 +94,7 @@ class RLPlotter():
         plt.ylabel(r'Active Orientation $\theta$')
         plt.ylim(0,7)
         plt.savefig(os.path.join(folder, f'episode{i}_actions.png'))
-        plt.clf()
+        plt.close()
     
     def plot_last_episdode_actions_polar(self):
         folder = os.path.join('logs', 'episode_actions_polar')
@@ -77,7 +104,7 @@ class RLPlotter():
         ax = plt.subplot(111, polar=True)
         ax.scatter(self.logger.episode_actions[i], x, c=x, cmap = 'plasma')
         fig.savefig(os.path.join(folder, f'episode{i}_actions_polar.png'))
-        plt.clf()
+        plt.close()
 
     def plot_last_episode_paths(self):
         folder = os.path.join('logs', 'episode_paths')
@@ -90,7 +117,7 @@ class RLPlotter():
         plt.ylabel('y')
         plt.title(f'Episode {i} Path')
         plt.savefig(os.path.join(folder, f'episode{i}_path.png'))
-        plt.clf()
+        plt.close()
 
 def plot_normalized_mexican_hat_potential(goal_area):
     x,y = np.meshgrid(np.linspace(-1,1,100),np.linspace(-1,1,100))
